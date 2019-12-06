@@ -1,4 +1,4 @@
-# Google Text-To-Speech API 
+# Text To Speech  
 
 Utility project, based on `Google Text-To-Speech API` and `JavaFX` GUI framework
 
