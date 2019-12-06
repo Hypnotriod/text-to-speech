@@ -74,9 +74,11 @@ public class MainSceneController implements Initializable {
 
     @FXML
     private void handleGeneratedPhrasesClick(MouseEvent event) {
-        String fileName = lvGeneratedPhrases.getSelectionModel().getSelectedItem().toString();
-        System.out.println("Playing: " + fileName);
-        mP3PlayerService.play(Configurations.PATH_GENERATED_PHRASES_FOLDER + fileName);
+        if (lvGeneratedPhrases.getItems().size() > 0) {
+            String fileName = lvGeneratedPhrases.getSelectionModel().getSelectedItem().toString();
+            System.out.println("Playing: " + fileName);
+            mP3PlayerService.play(Configurations.PATH_GENERATED_PHRASES_FOLDER + fileName);
+        }
     }
 
     @Override

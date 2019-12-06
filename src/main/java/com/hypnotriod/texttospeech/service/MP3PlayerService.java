@@ -19,8 +19,12 @@ public class MP3PlayerService {
             mediaPlayer = null;
         }
 
-        Media media = new Media(new File(filePath).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.play();
+        File file = new File(filePath);
+        
+        if (file.exists()) {
+            Media media = new Media(file.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
+        }
     }
 }
