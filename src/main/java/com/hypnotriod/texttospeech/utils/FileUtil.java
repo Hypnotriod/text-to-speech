@@ -7,7 +7,7 @@ import java.util.ArrayList;
  *
  * @author IPikin
  */
-public class FilesUtil {
+public class FileUtil {
 
     public static ArrayList<File> findFilesInFolder(String folderPath, String extension) {
         ArrayList<File> result = new ArrayList<>();

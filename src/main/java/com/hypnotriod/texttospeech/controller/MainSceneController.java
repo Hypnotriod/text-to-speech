@@ -5,7 +5,7 @@ import com.hypnotriod.texttospeech.api.TTSFileGenerator;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.service.AsyncService;
 import com.hypnotriod.texttospeech.service.MP3PlayerService;
-import com.hypnotriod.texttospeech.utils.FilesUtil;
+import com.hypnotriod.texttospeech.utils.FileUtil;
 import com.hypnotriod.texttospeech.utils.TextUtil;
 import java.io.File;
 import java.net.URL;
@@ -113,7 +113,7 @@ public class MainSceneController implements Initializable {
     }
 
     private void refreshGeneratedPhrasesList() {
-        List<File> generatedFiles = FilesUtil.findFilesInFolder(Configurations.PATH_GENERATED_PHRASES_FOLDER, Configurations.FILE_EXTENSION_MP3);
+        List<File> generatedFiles = FileUtil.findFilesInFolder(Configurations.PATH_GENERATED_PHRASES_FOLDER, Configurations.FILE_EXTENSION_MP3);
         lvGeneratedPhrases.getItems().clear();
 
         generatedFiles.forEach(file -> {
