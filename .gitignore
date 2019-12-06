@@ -1,0 +1,6 @@
+target/
+dependency-reduced-pom.xml
+nbactions.xml
+nb-configuration.xml
+*.mp3
+credentials.json
