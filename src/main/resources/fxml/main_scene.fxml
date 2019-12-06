@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" minHeight="-1.0" minWidth="-1.0" prefHeight="350.0" prefWidth="500.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.hypnotriod.texttospeech.controller.MainSceneController">
+  <children>
+    <TextField id="text" fx:id="tfInputText" prefHeight="25.0" prefWidth="292.0" promptText="Type phrase here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+    <ComboBox fx:id="cbLanguageCode" prefHeight="21.0" prefWidth="80.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="47.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList" />
+      </items>
+    </ComboBox>
+    <ComboBox id="cbLanguageCode" fx:id="cbGender" prefHeight="21.0" prefWidth="100.0" AnchorPane.leftAnchor="111.0" AnchorPane.topAnchor="47.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList" />
+      </items>
+    </ComboBox>
+    <TextField id="text" fx:id="tfGroup" prefHeight="25.0" prefWidth="203.0" promptText="Type group here" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="93.0" AnchorPane.topAnchor="47.0" />
+    <Button id="button" fx:id="btnGenerate" onAction="#handleGenerateButtonAction" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0" />
+    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onMouseClicked="#handleGeneratedPhrasesClick" prefHeight="251.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="90.0" />
+  </children>
+</AnchorPane>
