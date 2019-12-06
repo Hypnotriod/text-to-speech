@@ -1,15 +1,14 @@
-package com.hypnotriod.texttospeech.utils;
+package com.hypnotriod.texttospeech.service;
 
 import java.io.File;
 import java.util.ArrayList;
 
 /**
  *
- * @author IPikin
+ * @author Илья
  */
-public class FileUtil {
-
-    public static ArrayList<File> findFilesInFolder(String folderPath, String extension) {
+public class FileService {
+    public ArrayList<File> getFilesFromFolder(String folderPath, String extension) {
         ArrayList<File> result = new ArrayList<>();
         File folder = new File(folderPath);
 

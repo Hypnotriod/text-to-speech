@@ -3,12 +3,14 @@ package com.hypnotriod.texttospeech.controller;
 import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
 import com.hypnotriod.texttospeech.api.TTSFileGenerator;
 import com.hypnotriod.texttospeech.constants.Configurations;
+import com.hypnotriod.texttospeech.constants.Languages;
 import com.hypnotriod.texttospeech.service.AsyncService;
+import com.hypnotriod.texttospeech.service.FileService;
 import com.hypnotriod.texttospeech.service.MP3PlayerService;
-import com.hypnotriod.texttospeech.utils.FileUtil;
-import com.hypnotriod.texttospeech.utils.TextUtil;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -27,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 public class MainSceneController implements Initializable {
 
     private final AsyncService asyncService = new AsyncService();
+    private final FileService fileService = new FileService();
     private final TTSFileGenerator ttsFileGenerator = new TTSFileGenerator();
     private final MP3PlayerService mP3PlayerService = new MP3PlayerService();
 
@@ -91,7 +94,7 @@ public class MainSceneController implements Initializable {
     }
 
     private void initializeComboboxes() {
-        cbLanguageCode.getItems().addAll(Configurations.LANGUAGE_CODES);
+        cbLanguageCode.getItems().addAll(Languages.CODES);
         cbLanguageCode.getSelectionModel().select(0);
 
         cbGender.getItems().addAll(Configurations.VOICE_GENDERS);
@@ -99,8 +102,8 @@ public class MainSceneController implements Initializable {
     }
 
     private void onTextChanged() {
-        String inputText = TextUtil.toProperFileName(tfInputText.getText());
-        String groupName = TextUtil.toProperFileName(tfGroup.getText());
+        String inputText = ttsFileGenerator.toAllowedFileName(tfInputText.getText());
+        String groupName = ttsFileGenerator.toAllowedFileName(tfGroup.getText());
         btnGenerate.setDisable(inputText.length() == 0 || groupName.length() == 0);
     }
 
@@ -115,11 +118,15 @@ public class MainSceneController implements Initializable {
     }
 
     private void refreshGeneratedPhrasesList() {
-        List<File> generatedFiles = FileUtil.findFilesInFolder(Configurations.PATH_GENERATED_PHRASES_FOLDER, Configurations.FILE_EXTENSION_MP3);
-        lvGeneratedPhrases.getItems().clear();
+        List<String> filesNames = new ArrayList<>();
+        List<File> files = fileService.getFilesFromFolder(
+                Configurations.PATH_GENERATED_PHRASES_FOLDER,
+                Configurations.FILE_EXTENSION_MP3);
 
-        generatedFiles.forEach(file -> {
-            lvGeneratedPhrases.getItems().add(file.getName());
-        });
+        files.forEach(file -> filesNames.add(file.getName()));
+        Collections.sort(filesNames);
+
+        lvGeneratedPhrases.getItems().clear();
+        lvGeneratedPhrases.getItems().addAll(filesNames);
     }
 }
