@@ -1,4 +1,4 @@
-package com.hypnotriod.texttospeech.api;
+package com.hypnotriod.texttospeech.service;
 
 import com.google.cloud.texttospeech.v1.AudioConfig;
 import com.google.cloud.texttospeech.v1.AudioEncoding;
@@ -23,12 +23,12 @@ import java.util.regex.Pattern;
  *
  * @author Ilya Pikin
  */
-public class TTSFileGenerator {
+public class TTSFileGeneratorService {
 
     public static final Pattern FILE_NAME_REGEXP_PATTERN = Pattern.compile("[\\p{L}\\p{N}' ]");
 
     public void generate(String group, String text, String language, SsmlVoiceGender gender, float speakingRate) {
-        try ( TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+        try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
             SynthesisInput input = SynthesisInput.newBuilder()
                     .setText(text)
                     .build();
@@ -53,10 +53,10 @@ public class TTSFileGenerator {
                 generatedFolder.mkdir();
             }
 
-            try ( OutputStream out = new FileOutputStream(
+            try (OutputStream out = new FileOutputStream(
                     Configurations.PATH_GENERATED_PHRASES_FOLDER
-                    + toAllowedFileName(group).toUpperCase() + " - "
-                    + fromUpperCase(toAllowedFileName(text)) + Configurations.FILE_EXTENSION_MP3)) {
+                    + formatGroupName(group) + " - "
+                    + formatText(text) + Configurations.FILE_EXTENSION_MP3)) {
                 out.write(audioContents.toByteArray());
             } catch (IOException ex) {
                 Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,6 +64,14 @@ public class TTSFileGenerator {
         } catch (IOException ex) {
             Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public String formatText(String text) {
+        return fromUpperCase(toAllowedFileName(text));
+    }
+
+    public String formatGroupName(String group) {
+        return toAllowedFileName(group).toUpperCase();
     }
 
     public String toAllowedFileName(String input) {

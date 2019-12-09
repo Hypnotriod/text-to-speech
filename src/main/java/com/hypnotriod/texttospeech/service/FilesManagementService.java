@@ -7,7 +7,7 @@ import java.util.ArrayList;
  *
  * @author Илья
  */
-public class FileService {
+public class FilesManagementService {
     public ArrayList<File> getFilesFromFolder(String folderPath, String extension) {
         ArrayList<File> result = new ArrayList<>();
         File folder = new File(folderPath);

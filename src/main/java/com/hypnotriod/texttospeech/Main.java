@@ -2,6 +2,7 @@ package com.hypnotriod.texttospeech;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Resources;
+import com.hypnotriod.texttospeech.service.SSLService;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,10 @@ import javafx.stage.Stage;
  * @author Ilya Pikin
  */
 public class Main extends Application {
+
+    static {
+        new SSLService().disableSslVerification();
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
