@@ -4,7 +4,7 @@
 
     <groupId>com.hypnotriod</groupId>
     <artifactId>text-to-speech</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>jar</packaging>
 
     <name>TextToSpeech</name>
@@ -26,6 +26,11 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
             <version>1.101.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.api</groupId>

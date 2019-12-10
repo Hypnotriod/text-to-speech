@@ -10,14 +10,12 @@ import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
 import com.google.protobuf.ByteString;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.controller.MainSceneController;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -25,12 +23,12 @@ import java.util.regex.Pattern;
  */
 public class TTSFileGeneratorService {
 
-    public static final Pattern FILE_NAME_REGEXP_PATTERN = Pattern.compile("[\\p{L}\\p{N}' ]");
+    private final FilesManagementService filesManagementService = new FilesManagementService();
 
-    public void generate(String group, String text, String language, SsmlVoiceGender gender, float speakingRate) {
+    public void generate(String group, String phrase, String language, SsmlVoiceGender gender, float speakingRate) {
         try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
             SynthesisInput input = SynthesisInput.newBuilder()
-                    .setText(text)
+                    .setText(phrase)
                     .build();
 
             VoiceSelectionParams voice = VoiceSelectionParams.newBuilder()
@@ -48,15 +46,11 @@ public class TTSFileGeneratorService {
 
             ByteString audioContents = response.getAudioContent();
 
-            File generatedFolder = new File(Configurations.PATH_GENERATED_PHRASES_FOLDER);
-            if (!generatedFolder.exists()) {
-                generatedFolder.mkdir();
-            }
+            filesManagementService.createFolderIfNotExist(Configurations.PATH_GENERATED_PHRASES_FOLDER);
 
             try (OutputStream out = new FileOutputStream(
                     Configurations.PATH_GENERATED_PHRASES_FOLDER
-                    + formatGroupName(group) + " - "
-                    + formatText(text) + Configurations.FILE_EXTENSION_MP3)) {
+                    + toFinalFileName(group, phrase))) {
                 out.write(audioContents.toByteArray());
             } catch (IOException ex) {
                 Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
@@ -71,12 +65,12 @@ public class TTSFileGeneratorService {
     }
 
     public String formatGroupName(String group) {
-        return toAllowedFileName(group).toUpperCase();
+        return toAllowedFileName(group).toUpperCase().replace(' ', '_');
     }
 
     public String toAllowedFileName(String input) {
         StringBuilder result = new StringBuilder();
-        Matcher matcher = FILE_NAME_REGEXP_PATTERN.matcher(input);
+        Matcher matcher = Configurations.FILE_NAME_REGEXP_PATTERN.matcher(input);
 
         while (matcher.find()) {
             result.append(matcher.group());
@@ -87,5 +81,10 @@ public class TTSFileGeneratorService {
 
     public String fromUpperCase(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
+    public String toFinalFileName(String group, String phrase) {
+        return formatGroupName(group) + Configurations.GROUP_PHRASE_SEPARATOR
+                + formatText(phrase) + Configurations.FILE_EXTENSION_MP3;
     }
 }

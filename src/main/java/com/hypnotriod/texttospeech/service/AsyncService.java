@@ -6,7 +6,7 @@ import javafx.application.Platform;
 
 /**
  *
- * @author IPikin
+ * @author Ilya Pikin
  */
 public class AsyncService {
 

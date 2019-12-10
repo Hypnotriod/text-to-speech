@@ -2,8 +2,8 @@ package com.hypnotriod.texttospeech;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Resources;
+import com.hypnotriod.texttospeech.service.FilesManagementService;
 import com.hypnotriod.texttospeech.service.SSLService;
-import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,7 +34,8 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        new FilesManagementService().removeFolderIfExist(Configurations.PATH_TEMP_FOLDER);
         Application.launch(args);
     }
 }

@@ -6,11 +6,14 @@ import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Languages;
 import com.hypnotriod.texttospeech.service.AsyncService;
 import com.hypnotriod.texttospeech.service.FilesManagementService;
-import com.hypnotriod.texttospeech.service.MP3PlayerService;
+import com.hypnotriod.texttospeech.service.MediaPlayerService;
+import component.PhraseListCell;
+import component.PhraseListCellHandler;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -18,29 +21,37 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.util.Callback;
 
 /**
  *
  * @author Ilya Pikin
  */
-public class MainSceneController implements Initializable {
+public class MainSceneController implements Initializable, PhraseListCellHandler {
 
     private final AsyncService asyncService = new AsyncService();
     private final FilesManagementService filesManagementService = new FilesManagementService();
     private final TTSFileGeneratorService ttsFileGeneratorService = new TTSFileGeneratorService();
-    private final MP3PlayerService mp3PlayerService = new MP3PlayerService();
+    private final MediaPlayerService mediaPlayerService = new MediaPlayerService();
+
+    private final HashSet<String> alreadyCopiedFilesToTempFolder = new HashSet<>();
 
     @FXML
     private Button btnGenerate;
 
     @FXML
-    private TextField tfInputText;
+    private TextField tfPhrase;
 
     @FXML
     private TextField tfGroup;
+
+    @FXML
+    private TextField tfFilter;
 
     @FXML
     private ComboBox<String> cbLanguageCode;
@@ -53,39 +64,42 @@ public class MainSceneController implements Initializable {
 
     @FXML
     private void handleGenerateButtonAction(ActionEvent event) {
+        event.consume();
+
         String group = tfGroup.getText();
-        String inputText = tfInputText.getText();
+        String phrase = tfPhrase.getText();
         String languageCode = cbLanguageCode.getValue();
         SsmlVoiceGender gender = cbGender.getValue();
 
         System.out.println("Generation started...");
         System.out.println(
-                "Phrase: " + inputText
+                "Phrase: " + phrase
                 + " | Group: " + ttsFileGeneratorService.formatGroupName(group)
                 + " | LanguageCode: " + languageCode
                 + " | Gender: " + gender.toString());
 
-        tfInputText.clear();
+        tfPhrase.clear();
 
         asyncService.startAsyncProcess(() -> {
             ttsFileGeneratorService.generate(
                     group,
-                    inputText,
+                    phrase,
                     languageCode,
                     gender,
                     Configurations.SPEAKING_RATE);
         }, () -> {
             System.out.println("Generation finished...");
+            alreadyCopiedFilesToTempFolder.remove(ttsFileGeneratorService.toFinalFileName(group, phrase));
             refreshGeneratedPhrasesList();
         });
     }
 
     @FXML
-    private void handleGeneratedPhrasesClick(MouseEvent event) {
-        if (lvGeneratedPhrases.getItems().size() > 0) {
+    private void handleGeneratedPhrasesListKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+            event.consume();
             String fileName = lvGeneratedPhrases.getSelectionModel().getSelectedItem().toString();
-            System.out.println("Playing: " + fileName);
-            mp3PlayerService.play(Configurations.PATH_GENERATED_PHRASES_FOLDER + fileName);
+            onPhraseListCellPlay(fileName);
         }
     }
 
@@ -93,9 +107,20 @@ public class MainSceneController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setDisable(true);
 
+        initializePhrasesListView();
         initializeListeners();
         initializeComboboxes();
         refreshGeneratedPhrasesList();
+    }
+
+    private void initializePhrasesListView() {
+        PhraseListCellHandler handler = this;
+        lvGeneratedPhrases.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new PhraseListCell(handler);
+            }
+        });
     }
 
     private void initializeComboboxes() {
@@ -107,31 +132,68 @@ public class MainSceneController implements Initializable {
     }
 
     private void onTextChanged() {
-        String inputText = ttsFileGeneratorService.toAllowedFileName(tfInputText.getText());
+        String inputText = ttsFileGeneratorService.toAllowedFileName(tfPhrase.getText());
         String groupName = ttsFileGeneratorService.toAllowedFileName(tfGroup.getText());
         btnGenerate.setDisable(inputText.length() == 0 || groupName.length() == 0);
     }
 
     private void initializeListeners() {
-        tfInputText.textProperty().addListener((observable, oldValue, newValue) -> {
+        tfPhrase.textProperty().addListener((observable, oldValue, newValue) -> {
             onTextChanged();
         });
 
         tfGroup.textProperty().addListener((observable, oldValue, newValue) -> {
             onTextChanged();
         });
+
+        tfFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            refreshGeneratedPhrasesList();
+        });
     }
 
     private void refreshGeneratedPhrasesList() {
+        String filter = tfFilter.getText().toUpperCase();
+
         List<String> filesNames = new ArrayList<>();
         List<File> files = filesManagementService.getFilesFromFolder(
                 Configurations.PATH_GENERATED_PHRASES_FOLDER,
                 Configurations.FILE_EXTENSION_MP3);
 
-        files.forEach(file -> filesNames.add(file.getName()));
+        files.forEach(file -> {
+            String fileName = file.getName();
+            if (fileName.toUpperCase().contains(filter)) {
+                filesNames.add(fileName);
+            }
+        });
         Collections.sort(filesNames);
 
         lvGeneratedPhrases.getItems().clear();
         lvGeneratedPhrases.getItems().addAll(filesNames);
+    }
+
+    @Override
+    public void onPhraseListCellDelete(String id) {
+        lvGeneratedPhrases.requestFocus();
+        mediaPlayerService.stop();
+        filesManagementService.removeFile(Configurations.PATH_GENERATED_PHRASES_FOLDER + id);
+        alreadyCopiedFilesToTempFolder.remove(id);
+
+        refreshGeneratedPhrasesList();
+    }
+
+    @Override
+    public void onPhraseListCellPlay(String id) {
+        System.out.println("Playing: " + id);
+        copyFileToTempFolder(id);
+        mediaPlayerService.play(Configurations.PATH_TEMP_FOLDER + id);
+    }
+
+    private void copyFileToTempFolder(String fileName) {
+        if (!alreadyCopiedFilesToTempFolder.contains(fileName)) {
+            filesManagementService.copyFile(
+                    Configurations.PATH_GENERATED_PHRASES_FOLDER + fileName,
+                    Configurations.PATH_TEMP_FOLDER + fileName);
+            alreadyCopiedFilesToTempFolder.add(fileName);
+        }
     }
 }
