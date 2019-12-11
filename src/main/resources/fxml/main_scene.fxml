@@ -22,7 +22,7 @@
     </ComboBox>
     <TextField id="text" fx:id="tfGroup" prefHeight="25.0" prefWidth="203.0" promptText="Type group here" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="93.0" AnchorPane.topAnchor="47.0" />
     <Button id="button" fx:id="btnGenerate" onAction="#handleGenerateButtonAction" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0" />
-    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="223.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="112.0" />
     <TextField id="tfPhraseFilter" fx:id="tfFilter" prefWidth="472.0" promptText="Type filter here" text="" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="78.0" />
+    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="223.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="112.0" />
   </children>
 </AnchorPane>

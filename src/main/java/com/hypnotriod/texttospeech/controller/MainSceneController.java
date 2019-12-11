@@ -7,13 +7,13 @@ import com.hypnotriod.texttospeech.constants.Languages;
 import com.hypnotriod.texttospeech.service.AsyncService;
 import com.hypnotriod.texttospeech.service.FilesManagementService;
 import com.hypnotriod.texttospeech.service.MediaPlayerService;
+import com.hypnotriod.texttospeech.service.TempFolderService;
 import component.PhraseListCell;
 import component.PhraseListCellHandler;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -38,8 +38,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     private final FilesManagementService filesManagementService = new FilesManagementService();
     private final TTSFileGeneratorService ttsFileGeneratorService = new TTSFileGeneratorService();
     private final MediaPlayerService mediaPlayerService = new MediaPlayerService();
-
-    private final HashSet<String> alreadyCopiedFilesToTempFolder = new HashSet<>();
+    private final TempFolderService tempFolderService = new TempFolderService();
 
     @FXML
     private Button btnGenerate;
@@ -89,7 +88,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
                     Configurations.SPEAKING_RATE);
         }, () -> {
             System.out.println("Generation finished...");
-            alreadyCopiedFilesToTempFolder.remove(ttsFileGeneratorService.toFinalFileName(group, phrase));
+            tempFolderService.untrack(ttsFileGeneratorService.toFinalFileName(group, phrase));
             refreshGeneratedPhrasesList();
         });
     }
@@ -175,8 +174,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     public void onPhraseListCellDelete(String id) {
         lvGeneratedPhrases.requestFocus();
         mediaPlayerService.stop();
-        filesManagementService.removeFile(Configurations.PATH_GENERATED_PHRASES_FOLDER + id);
-        alreadyCopiedFilesToTempFolder.remove(id);
+        tempFolderService.remove(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
 
         refreshGeneratedPhrasesList();
     }
@@ -184,16 +182,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     @Override
     public void onPhraseListCellPlay(String id) {
         System.out.println("Playing: " + id);
-        copyFileToTempFolder(id);
-        mediaPlayerService.play(Configurations.PATH_TEMP_FOLDER + id);
-    }
-
-    private void copyFileToTempFolder(String fileName) {
-        if (!alreadyCopiedFilesToTempFolder.contains(fileName)) {
-            filesManagementService.copyFile(
-                    Configurations.PATH_GENERATED_PHRASES_FOLDER + fileName,
-                    Configurations.PATH_TEMP_FOLDER + fileName);
-            alreadyCopiedFilesToTempFolder.add(fileName);
-        }
+        String filePath = tempFolderService.add(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
+        mediaPlayerService.play(filePath);
     }
 }
