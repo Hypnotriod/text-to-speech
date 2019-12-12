@@ -6,19 +6,19 @@ import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Languages;
 import com.hypnotriod.texttospeech.service.AsyncService;
 import com.hypnotriod.texttospeech.service.FilesManagementService;
+import com.hypnotriod.texttospeech.service.LoggerService;
 import com.hypnotriod.texttospeech.service.MediaPlayerService;
 import com.hypnotriod.texttospeech.service.TempFolderService;
 import component.PhraseListCell;
 import component.PhraseListCellHandler;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,6 +42,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     private final TTSFileGeneratorService ttsFileGeneratorService = new TTSFileGeneratorService();
     private final MediaPlayerService mediaPlayerService = new MediaPlayerService();
     private final TempFolderService tempFolderService = new TempFolderService();
+    private final LoggerService loggerService = new LoggerService();
 
     @FXML
     private Button btnGenerate;
@@ -73,12 +74,12 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         String languageCode = cbLanguageCode.getValue();
         SsmlVoiceGender gender = cbGender.getValue();
 
-        System.out.println("Generation started...");
-        System.out.println(
-                "Phrase: " + phrase
-                + " | Group: " + ttsFileGeneratorService.formatGroupName(group)
-                + " | LanguageCode: " + languageCode
-                + " | Gender: " + gender.toString());
+        loggerService.logGenerationStarted();
+        loggerService.logGenerationPhrase(
+                phrase,
+                ttsFileGeneratorService.formatGroupName(group),
+                languageCode,
+                gender.toString());
 
         tfPhrase.clear();
 
@@ -90,7 +91,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
                     gender,
                     Configurations.SPEAKING_RATE);
         }, () -> {
-            System.out.println("Generation finished...");
+            loggerService.logGenerationFinished();
             tempFolderService.untrack(ttsFileGeneratorService.toFinalFileName(group, phrase));
             refreshGeneratedPhrasesList();
         });
@@ -161,30 +162,29 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         }
 
         Pattern pattern = Pattern.compile(filter, Pattern.CASE_INSENSITIVE);
-
-        List<String> filesNames = new ArrayList<>();
         List<File> files = filesManagementService.getFilesFromFolder(
                 Configurations.PATH_GENERATED_PHRASES_FOLDER,
                 Configurations.FILE_EXTENSION_MP3);
-
-        files.forEach(file -> {
-            String fileName = file.getName();
-            Matcher matcher = pattern.matcher(fileName);
-            if (matcher.find()) {
-                filesNames.add(fileName);
-            }
-        });
-        Collections.sort(filesNames);
+        List<String> filesNames = files.stream()
+                .map(File::getName)
+                .filter(name -> generatedPhraseFileNameFilter(name, pattern))
+                .sorted()
+                .collect(Collectors.toList());
 
         lvGeneratedPhrases.getItems().clear();
         lvGeneratedPhrases.getItems().addAll(filesNames);
+    }
+
+    private boolean generatedPhraseFileNameFilter(String fileName, Pattern pattern) {
+        Matcher matcher = pattern.matcher(fileName);
+        return matcher.find();
     }
 
     private boolean checkFilterIsValid(String filter) {
         try {
             Pattern.compile(filter);
             return true;
-        } catch (PatternSyntaxException exception) {
+        } catch (PatternSyntaxException ex) {
             return false;
         }
     }
@@ -200,7 +200,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
     @Override
     public void onPhraseListCellPlay(String id) {
-        System.out.println("Playing: " + id);
+        loggerService.logPlying(id);
         String filePath = tempFolderService.add(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
         mediaPlayerService.play(filePath);
     }
