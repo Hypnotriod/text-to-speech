@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -153,6 +156,12 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     private void refreshGeneratedPhrasesList() {
         String filter = tfFilter.getText().toUpperCase();
 
+        if (!checkFilterIsValid(filter)) {
+            return;
+        }
+
+        Pattern pattern = Pattern.compile(filter, Pattern.CASE_INSENSITIVE);
+
         List<String> filesNames = new ArrayList<>();
         List<File> files = filesManagementService.getFilesFromFolder(
                 Configurations.PATH_GENERATED_PHRASES_FOLDER,
@@ -160,7 +169,8 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
         files.forEach(file -> {
             String fileName = file.getName();
-            if (fileName.toUpperCase().contains(filter)) {
+            Matcher matcher = pattern.matcher(fileName);
+            if (matcher.find()) {
                 filesNames.add(fileName);
             }
         });
@@ -168,6 +178,15 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
         lvGeneratedPhrases.getItems().clear();
         lvGeneratedPhrases.getItems().addAll(filesNames);
+    }
+
+    private boolean checkFilterIsValid(String filter) {
+        try {
+            Pattern.compile(filter);
+            return true;
+        } catch (PatternSyntaxException exception) {
+            return false;
+        }
     }
 
     @Override
