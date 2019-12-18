@@ -30,6 +30,27 @@ public class FilesManagementService {
         return result;
     }
 
+    public String readFileToString(String filePath) {
+        String result = null;
+        File file = new File(filePath);
+        if (file.exists()) {
+            try {
+                result = FileUtils.readFileToString(file);
+            } catch (IOException ex) {
+                Logger.getLogger(FilesManagementService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return result;
+    }
+
+    public void writeStringToFile(String filePath, String content) {
+        try {
+            FileUtils.writeStringToFile(new File(filePath), content);
+        } catch (IOException ex) {
+            Logger.getLogger(FilesManagementService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public boolean removeFile(String path) {
         File file = new File(path);
         boolean result = false;

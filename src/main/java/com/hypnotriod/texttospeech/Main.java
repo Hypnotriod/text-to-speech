@@ -2,8 +2,7 @@ package com.hypnotriod.texttospeech;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Resources;
-import com.hypnotriod.texttospeech.service.FilesManagementService;
-import com.hypnotriod.texttospeech.service.SSLService;
+import com.hypnotriod.texttospeech.constants.Services;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +16,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     static {
-        new SSLService().disableSslVerification();
+        Services.SSL_SERVICE.disableSslVerification();
     }
 
     @Override
@@ -35,7 +34,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        new FilesManagementService().removeFolderIfExist(Configurations.PATH_TEMP_FOLDER);
+        Services.FILES_MANAGEMENT_SERVICE.removeFolderIfExist(Configurations.PATH_TEMP_FOLDER);
         Application.launch(args);
     }
 }

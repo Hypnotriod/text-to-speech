@@ -1,6 +1,7 @@
 target/
 phrases/
 temp/
+.settings
 dependency-reduced-pom.xml
 nbactions.xml
 nb-configuration.xml

@@ -4,10 +4,12 @@ import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
 import com.hypnotriod.texttospeech.service.TTSFileGeneratorService;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Languages;
+import com.hypnotriod.texttospeech.constants.Services;
 import com.hypnotriod.texttospeech.service.AsyncService;
 import com.hypnotriod.texttospeech.service.FilesManagementService;
 import com.hypnotriod.texttospeech.service.LoggerService;
 import com.hypnotriod.texttospeech.service.MediaPlayerService;
+import com.hypnotriod.texttospeech.service.SettingsService;
 import com.hypnotriod.texttospeech.service.TempFolderService;
 import component.PhraseListCell;
 import component.PhraseListCellHandler;
@@ -37,15 +39,19 @@ import javafx.util.Callback;
  */
 public class MainSceneController implements Initializable, PhraseListCellHandler {
 
-    private final AsyncService asyncService = new AsyncService();
-    private final FilesManagementService filesManagementService = new FilesManagementService();
-    private final TTSFileGeneratorService ttsFileGeneratorService = new TTSFileGeneratorService();
-    private final MediaPlayerService mediaPlayerService = new MediaPlayerService();
-    private final TempFolderService tempFolderService = new TempFolderService();
-    private final LoggerService loggerService = new LoggerService();
+    private final AsyncService asyncService = Services.ASYNC_SERVICE;
+    private final FilesManagementService filesManagementService = Services.FILES_MANAGEMENT_SERVICE;
+    private final TTSFileGeneratorService ttsFileGeneratorService = Services.TTS_FILE_GENERATOR_SERVICE;
+    private final MediaPlayerService mediaPlayerService = Services.MEDIA_PLAYER_SERVICE;
+    private final TempFolderService tempFolderService = Services.TEMP_FOLDER_SERVICE;
+    private final LoggerService loggerService = Services.LOGGER_SERVICE;
+    private final SettingsService settingsService = Services.SETTINGS_SERVICE;
 
     @FXML
     private Button btnGenerate;
+
+    @FXML
+    private Button btnAddDeleteFilter;
 
     @FXML
     private TextField tfPhrase;
@@ -54,7 +60,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     private TextField tfGroup;
 
     @FXML
-    private TextField tfFilter;
+    private ComboBox cbFilter;
 
     @FXML
     private ComboBox<String> cbLanguageCode;
@@ -106,6 +112,19 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         }
     }
 
+    @FXML
+    private void handleAddDeleteFilterButtonAction(ActionEvent event) {
+        event.consume();
+
+        if (btnAddDeleteFilter.getText().equals(Configurations.TXT_BUTTON_ADD)) {
+            settingsService.getFilterPatterns().add(cbFilter.getEditor().getText());
+        } else {
+            settingsService.getFilterPatterns().remove(cbFilter.getEditor().getText());
+        }
+        settingsService.saveSettings();
+        refreshCBFilters();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setDisable(true);
@@ -132,6 +151,14 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
         cbGender.getItems().addAll(Configurations.VOICE_GENDERS);
         cbGender.getSelectionModel().select(0);
+
+        refreshCBFilters();
+    }
+
+    private void refreshCBFilters() {
+        cbFilter.getItems().clear();
+        cbFilter.getItems().addAll(settingsService.getFilterPatterns());
+        updateAddDeleteFilterButtonState();
     }
 
     private void onTextChanged() {
@@ -149,13 +176,28 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
             onTextChanged();
         });
 
-        tfFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            refreshGeneratedPhrasesList();
+        cbFilter.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            onFilterChanged();
         });
     }
 
+    private void onFilterChanged() {
+        updateAddDeleteFilterButtonState();
+        refreshGeneratedPhrasesList();
+    }
+
+    private void updateAddDeleteFilterButtonState() {
+        String filter = cbFilter.getEditor().getText();
+        btnAddDeleteFilter.setDisable(filter.isEmpty());
+        if (settingsService.getFilterPatterns().contains(filter)) {
+            btnAddDeleteFilter.setText(Configurations.TXT_BUTTON_DELETE);
+        } else {
+            btnAddDeleteFilter.setText(Configurations.TXT_BUTTON_ADD);
+        }
+    }
+
     private void refreshGeneratedPhrasesList() {
-        String filter = tfFilter.getText().toUpperCase();
+        String filter = cbFilter.getEditor().getText();
 
         if (!checkFilterIsValid(filter)) {
             return;

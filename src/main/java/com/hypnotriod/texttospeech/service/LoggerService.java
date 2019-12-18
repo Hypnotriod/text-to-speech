@@ -25,4 +25,8 @@ public class LoggerService {
     public void logPlying(String fileName) {
         System.out.println("Playing: " + fileName);
     }
+    
+    public void logSettingsFileCorrupted() {
+        System.out.println("Settings file is corrupted!");
+    }
 }
