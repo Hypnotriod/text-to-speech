@@ -1,4 +1,4 @@
-package entity;
+package com.hypnotriod.texttospeech.entity;
 
 import java.util.ArrayList;
 

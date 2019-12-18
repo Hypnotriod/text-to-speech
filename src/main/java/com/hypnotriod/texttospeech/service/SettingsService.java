@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Services;
-import entity.Settings;
+import com.hypnotriod.texttospeech.entity.Settings;
 import java.util.ArrayList;
 
 /**
