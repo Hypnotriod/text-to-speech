@@ -156,8 +156,13 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     }
 
     private void refreshCBFilters() {
+        String filter = cbFilter.getEditor().getText();
         cbFilter.getItems().clear();
         cbFilter.getItems().addAll(settingsService.getFilterPatterns());
+        int filterIndex = cbFilter.getItems().indexOf(filter);
+        if (filterIndex != -1) {
+            cbFilter.getSelectionModel().select(filterIndex);
+        }
         updateAddDeleteFilterButtonState();
     }
 

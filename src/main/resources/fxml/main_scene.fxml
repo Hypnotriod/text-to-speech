@@ -22,8 +22,8 @@
     </ComboBox>
     <TextField id="text" fx:id="tfGroup" prefHeight="25.0" prefWidth="203.0" promptText="Type group here" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="93.0" AnchorPane.topAnchor="47.0" />
     <Button id="button" fx:id="btnGenerate" onAction="#handleGenerateButtonAction" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0" />
-    <Button fx:id="btnAddDeleteFilter" focusTraversable="false" layoutY="78.0" mnemonicParsing="false" onAction="#handleAddDeleteFilterButtonAction" text="-" AnchorPane.rightAnchor="14.0" />
-    <ComboBox fx:id="cbFilter" editable="true" layoutY="78.0" prefWidth="442.0" promptText="Type filter here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="48.0">
+    <Button fx:id="btnAddDeleteFilter" focusTraversable="false" layoutY="80.0" mnemonicParsing="false" onAction="#handleAddDeleteFilterButtonAction" text="-" AnchorPane.rightAnchor="14.0" />
+    <ComboBox fx:id="cbFilter" editable="true" layoutY="80.0" prefWidth="438.0" promptText="Type filter here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="48.0">
       <items>
         <FXCollections fx:factory="observableArrayList">
           <String fx:value="Item 1" />
@@ -32,6 +32,6 @@
         </FXCollections>
       </items>
     </ComboBox>
-    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="223.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="112.0" />
+    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="221.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="115.0" />
   </children>
 </AnchorPane>
