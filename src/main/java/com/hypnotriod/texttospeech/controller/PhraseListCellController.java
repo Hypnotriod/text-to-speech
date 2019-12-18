@@ -1,7 +1,7 @@
 package com.hypnotriod.texttospeech.controller;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
-import component.PhraseListCellHandler;
+import com.hypnotriod.texttospeech.component.PhraseListCellHandler;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;

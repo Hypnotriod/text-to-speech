@@ -1,4 +1,4 @@
-package component;
+package com.hypnotriod.texttospeech.component;
 
 import com.hypnotriod.texttospeech.Main;
 import com.hypnotriod.texttospeech.constants.Resources;

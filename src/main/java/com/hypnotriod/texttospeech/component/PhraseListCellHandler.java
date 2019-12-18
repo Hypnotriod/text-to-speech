@@ -1,4 +1,4 @@
-package component;
+package com.hypnotriod.texttospeech.component;
 
 /**
  *
