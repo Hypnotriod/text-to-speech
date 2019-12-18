@@ -9,12 +9,12 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-1.0" onMouseClicked="#handleComponentClickAction" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.hypnotriod.texttospeech.controller.PhraseListCellController">
   <children>
-    <Label id="txtGroup" fx:id="tfGroup" layoutY="5.0" prefWidth="130.0" text="GROUP" AnchorPane.leftAnchor="10.0" />
-    <Label id="txtText" fx:id="tfPhrase" layoutY="7.0" prefWidth="-1.0" text="Text text text" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="70.0" />
-    <Button fx:id="btnDelete" focusTraversable="false" layoutY="2.0" maxHeight="21.0" mnemonicParsing="false" onAction="#handleDeleteButtonAction" prefHeight="21.0" text="-" textOverrun="ELLIPSIS" AnchorPane.rightAnchor="10.0">
+    <Label id="txtGroup" fx:id="tfGroup" layoutY="5.0" prefWidth="130.0" text="GROUP" underline="false" AnchorPane.leftAnchor="10.0">
       <font>
-        <Font name="System Bold" size="12.0" />
+        <Font name="System Bold" size="12.0" fx:id="x1" />
       </font>
-    </Button>
+    </Label>
+    <Label id="txtText" fx:id="tfPhrase" layoutY="7.0" prefWidth="-1.0" text="Text text text" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="70.0" />
+    <Button fx:id="btnDelete" focusTraversable="false" font="$x1" layoutY="2.0" maxHeight="21.0" mnemonicParsing="false" onAction="#handleDeleteButtonAction" prefHeight="21.0" text="-" textOverrun="ELLIPSIS" AnchorPane.rightAnchor="10.0" />
   </children>
 </AnchorPane>
