@@ -213,7 +213,6 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
                 Configurations.FILE_EXTENSION_MP3);
         List<String> filesNames = files.stream()
                 .map(File::getName)
-                .map(FilenameUtils::removeExtension)
                 .filter(name -> generatedPhraseFileNameFilter(name, pattern))
                 .sorted()
                 .collect(Collectors.toList());
@@ -223,6 +222,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     }
 
     private boolean generatedPhraseFileNameFilter(String fileName, Pattern pattern) {
+        fileName = FilenameUtils.removeExtension(fileName);
         Matcher matcher = pattern.matcher(fileName);
         return matcher.find();
     }
