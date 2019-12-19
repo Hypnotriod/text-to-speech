@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -14,6 +15,8 @@ import javafx.stage.Stage;
  * @author Ilya Pikin
  */
 public class Main extends Application {
+
+    private Stage stage;
 
     static {
         Services.SSL_SERVICE.disableSslVerification();
@@ -26,11 +29,26 @@ public class Main extends Application {
         Scene mainScene = new Scene(root);
         mainScene.getStylesheets().add(Resources.PATH_MAIN_SCENE_STLE);
 
-        stage.setTitle(Configurations.APP_NAME);
-        stage.setMinHeight(Configurations.APP_HEIGHT_MIN);
-        stage.setMinWidth(Configurations.APP_WITH_MIN);
-        stage.setScene(mainScene);
-        stage.show();
+        this.stage = stage;
+        this.stage.setTitle(Configurations.APP_NAME);
+        this.stage.setMinHeight(Configurations.APP_HEIGHT_MIN);
+        this.stage.setMinWidth(Configurations.APP_WITH_MIN);
+        this.stage.setWidth(Math.min(
+                Screen.getPrimary().getBounds().getWidth(),
+                Services.SETTINGS_SERVICE.getAppWidth()));
+        this.stage.setHeight(Math.min(
+                Screen.getPrimary().getBounds().getHeight(),
+                Services.SETTINGS_SERVICE.getAppWidth()));
+        this.stage.setScene(mainScene);
+        this.stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        Services.SETTINGS_SERVICE.setAppHeight(stage.getHeight());
+        Services.SETTINGS_SERVICE.setAppWidth(stage.getWidth());
+        Services.SETTINGS_SERVICE.saveSettings();
+        super.stop();
     }
 
     public static void main(String[] args) {

@@ -37,4 +37,20 @@ public class SettingsService {
     public ArrayList<String> getFilterPatterns() {
         return settings.filterPatterns;
     }
+
+    public double getAppWidth() {
+        return settings.appWith;
+    }
+
+    public void setAppWidth(double value) {
+        settings.appWith = value;
+    }
+
+    public double getAppHeight() {
+        return settings.appHeight;
+    }
+
+    public void setAppHeight(double value) {
+        settings.appHeight = value;
+    }
 }
