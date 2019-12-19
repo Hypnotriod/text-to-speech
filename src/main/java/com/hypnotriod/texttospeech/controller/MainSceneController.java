@@ -32,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  *
@@ -212,6 +213,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
                 Configurations.FILE_EXTENSION_MP3);
         List<String> filesNames = files.stream()
                 .map(File::getName)
+                .map(FilenameUtils::removeExtension)
                 .filter(name -> generatedPhraseFileNameFilter(name, pattern))
                 .sorted()
                 .collect(Collectors.toList());
