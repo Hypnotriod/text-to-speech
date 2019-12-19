@@ -38,7 +38,7 @@ public class Main extends Application {
                 Services.SETTINGS_SERVICE.getAppWidth()));
         this.stage.setHeight(Math.min(
                 Screen.getPrimary().getBounds().getHeight(),
-                Services.SETTINGS_SERVICE.getAppWidth()));
+                Services.SETTINGS_SERVICE.getAppHeight()));
         this.stage.setScene(mainScene);
         this.stage.show();
     }
