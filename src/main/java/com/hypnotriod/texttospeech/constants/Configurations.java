@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
  */
 public class Configurations {
 
-    public static final String APP_NAME = "Text To Speech Util v0.1.0";
-    public static final int APP_WITH_MIN = 500;
+    public static final String APP_NAME = "Text To Speech Util v0.1.1";
+    public static final int APP_WITH_MIN = 600;
     public static final int APP_HEIGHT_MIN = 350;
 
     public static final String PATH_SETTINGS = ".settings";

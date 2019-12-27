@@ -7,23 +7,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="-1.0" minWidth="-1.0" prefHeight="350.0" prefWidth="500.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.hypnotriod.texttospeech.controller.MainSceneController">
+<AnchorPane id="AnchorPane" minHeight="-1.0" minWidth="-1.0" prefHeight="350.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.hypnotriod.texttospeech.controller.MainSceneController">
   <children>
     <TextField id="text" fx:id="tfPhrase" prefHeight="25.0" prefWidth="292.0" promptText="Type phrase here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
-    <ComboBox fx:id="cbLanguageCode" prefHeight="21.0" prefWidth="80.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="47.0">
+    <ComboBox fx:id="cbLanguageCode" onAction="#handleLanguageCodeCheckBoxAction" prefHeight="21.0" prefWidth="130.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="47.0">
       <items>
         <FXCollections fx:factory="observableArrayList" />
       </items>
     </ComboBox>
-    <ComboBox id="cbLanguageCode" fx:id="cbGender" prefHeight="21.0" prefWidth="100.0" AnchorPane.leftAnchor="111.0" AnchorPane.topAnchor="47.0">
+    <ComboBox id="cbLanguageCode" fx:id="cbGender" onAction="#handleGenderCodeCheckBoxAction" prefHeight="21.0" prefWidth="130.0" AnchorPane.leftAnchor="155.0" AnchorPane.topAnchor="47.0">
       <items>
         <FXCollections fx:factory="observableArrayList" />
       </items>
     </ComboBox>
-    <TextField id="text" fx:id="tfGroup" prefHeight="25.0" prefWidth="203.0" promptText="Type group here" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="93.0" AnchorPane.topAnchor="47.0" />
+    <TextField id="text" fx:id="tfGroup" prefHeight="25.0" prefWidth="218.0" promptText="Type group here" AnchorPane.leftAnchor="295.0" AnchorPane.rightAnchor="92.0" AnchorPane.topAnchor="47.0" />
     <Button id="button" fx:id="btnGenerate" onAction="#handleGenerateButtonAction" text="Generate" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="47.0" />
     <Button fx:id="btnAddDeleteFilter" focusTraversable="false" layoutY="80.0" mnemonicParsing="false" onAction="#handleAddDeleteFilterButtonAction" text="-" AnchorPane.rightAnchor="14.0" />
-    <ComboBox fx:id="cbFilter" editable="true" layoutY="80.0" prefWidth="438.0" promptText="Type filter here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="48.0">
+    <ComboBox fx:id="cbFilter" editable="true" layoutY="80.0" prefWidth="-1.0" promptText="Type filter here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="48.0">
       <items>
         <FXCollections fx:factory="observableArrayList">
           <String fx:value="Item 1" />
@@ -33,5 +33,10 @@
       </items>
     </ComboBox>
     <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="221.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="115.0" />
+    <HBox fx:id="hbInProgress" alignment="TOP_CENTER" prefHeight="-1.0" prefWidth="-1.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="101.0">
+      <children>
+        <ProgressIndicator prefHeight="99.0" prefWidth="111.0" progress="-1.0" />
+      </children>
+    </HBox>
   </children>
 </AnchorPane>

@@ -1,5 +1,6 @@
 package com.hypnotriod.texttospeech.service;
 
+import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.hypnotriod.texttospeech.constants.Configurations;
@@ -52,5 +53,37 @@ public class SettingsService {
 
     public void setAppHeight(double value) {
         settings.appHeight = value;
+    }
+
+    public String getLanguageCode() {
+        return settings.languageCode;
+    }
+
+    public void setLanguageCode(String value) {
+        settings.languageCode = value;
+    }
+
+    public SsmlVoiceGender getGender() {
+        return settings.gender;
+    }
+
+    public void setGender(SsmlVoiceGender value) {
+        settings.gender = value;
+    }
+    
+    public String getGroup() {
+        return settings.group;
+    }
+
+    public void setGroup(String value) {
+        settings.group = value;
+    }
+    
+    public String getFilter() {
+        return settings.filter;
+    }
+
+    public void setFilter(String value) {
+        settings.filter = value;
     }
 }

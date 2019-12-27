@@ -31,6 +31,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.apache.commons.io.FilenameUtils;
 
@@ -73,6 +74,9 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     private ListView lvGeneratedPhrases;
 
     @FXML
+    private HBox hbInProgress;
+
+    @FXML
     private void handleGenerateButtonAction(ActionEvent event) {
         event.consume();
 
@@ -91,6 +95,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         tfPhrase.clear();
 
         asyncService.startAsyncProcess(() -> {
+            onGeneratePhraeseStarted();
             ttsFileGeneratorService.generate(
                     group,
                     phrase,
@@ -101,7 +106,24 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
             loggerService.logGenerationFinished();
             tempFolderService.untrack(ttsFileGeneratorService.toFinalFileName(group, phrase));
             refreshGeneratedPhrasesList();
+            onGeneratePhraeseFinished();
         });
+    }
+
+    private int generatedPhrasesInProgressCount = 0;
+
+    private void onGeneratePhraeseStarted() {
+        hbInProgress.setVisible(true);
+        lvGeneratedPhrases.setDisable(true);
+        generatedPhrasesInProgressCount++;
+    }
+
+    private void onGeneratePhraeseFinished() {
+        generatedPhrasesInProgressCount--;
+        if (generatedPhrasesInProgressCount == 0) {
+            hbInProgress.setVisible(false);
+            lvGeneratedPhrases.setDisable(false);
+        }
     }
 
     @FXML
@@ -126,14 +148,29 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         refreshCBFilters();
     }
 
+    @FXML
+    private void handleLanguageCodeCheckBoxAction(ActionEvent event) {
+        settingsService.setLanguageCode(cbLanguageCode.getValue());
+    }
+
+    @FXML
+    private void handleGenderCodeCheckBoxAction(ActionEvent event) {
+        settingsService.setGender(cbGender.getValue());
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setDisable(true);
 
+        initializeTextFields();
         initializePhrasesListView();
         initializeListeners();
         initializeComboboxes();
         refreshGeneratedPhrasesList();
+    }
+
+    private void initializeTextFields() {
+        tfGroup.setText(settingsService.getGroup());
     }
 
     private void initializePhrasesListView() {
@@ -148,11 +185,12 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
     private void initializeComboboxes() {
         cbLanguageCode.getItems().addAll(Languages.CODES);
-        cbLanguageCode.getSelectionModel().select(0);
+        cbLanguageCode.getSelectionModel().select(settingsService.getLanguageCode());
 
         cbGender.getItems().addAll(Configurations.VOICE_GENDERS);
-        cbGender.getSelectionModel().select(0);
+        cbGender.getSelectionModel().select(settingsService.getGender());
 
+        cbFilter.getEditor().setText(settingsService.getFilter());
         refreshCBFilters();
     }
 
@@ -166,6 +204,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     }
 
     private void onTextChanged() {
+        settingsService.setGroup(tfGroup.getText());
         String inputText = ttsFileGeneratorService.toAllowedFileName(tfPhrase.getText());
         String groupName = ttsFileGeneratorService.toAllowedFileName(tfGroup.getText());
         btnGenerate.setDisable(inputText.length() == 0 || groupName.length() == 0);
@@ -186,6 +225,7 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     }
 
     private void onFilterChanged() {
+        settingsService.setFilter(cbFilter.getEditor().getText());
         updateAddDeleteFilterButtonState();
         refreshGeneratedPhrasesList();
     }
