@@ -32,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.apache.commons.io.FilenameUtils;
 
@@ -75,88 +76,6 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
     @FXML
     private HBox hbInProgress;
-
-    @FXML
-    private void handleGenerateButtonAction(ActionEvent event) {
-        event.consume();
-
-        String group = tfGroup.getText();
-        String phrase = tfPhrase.getText();
-        String languageCode = cbLanguageCode.getValue();
-        SsmlVoiceGender gender = cbGender.getValue();
-
-        loggerService.logGenerationStarted();
-        loggerService.logGenerationPhrase(
-                phrase,
-                ttsFileGeneratorService.formatGroupName(group),
-                languageCode,
-                gender.toString());
-
-        tfPhrase.clear();
-
-        asyncService.startAsyncProcess(() -> {
-            onGeneratePhraeseStarted();
-            ttsFileGeneratorService.generate(
-                    group,
-                    phrase,
-                    languageCode,
-                    gender,
-                    Configurations.SPEAKING_RATE);
-        }, () -> {
-            loggerService.logGenerationFinished();
-            tempFolderService.untrack(ttsFileGeneratorService.toFinalFileName(group, phrase));
-            refreshGeneratedPhrasesList();
-            onGeneratePhraeseFinished();
-        });
-    }
-
-    private int generatedPhrasesInProgressCount = 0;
-
-    private void onGeneratePhraeseStarted() {
-        hbInProgress.setVisible(true);
-        lvGeneratedPhrases.setDisable(true);
-        generatedPhrasesInProgressCount++;
-    }
-
-    private void onGeneratePhraeseFinished() {
-        generatedPhrasesInProgressCount--;
-        if (generatedPhrasesInProgressCount == 0) {
-            hbInProgress.setVisible(false);
-            lvGeneratedPhrases.setDisable(false);
-        }
-    }
-
-    @FXML
-    private void handleGeneratedPhrasesListKeyPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
-            event.consume();
-            String fileName = lvGeneratedPhrases.getSelectionModel().getSelectedItem().toString();
-            onPhraseListCellPlay(fileName);
-        }
-    }
-
-    @FXML
-    private void handleAddDeleteFilterButtonAction(ActionEvent event) {
-        event.consume();
-
-        if (btnAddDeleteFilter.getText().equals(Configurations.TXT_BUTTON_ADD)) {
-            settingsService.getFilterPatterns().add(cbFilter.getEditor().getText());
-        } else {
-            settingsService.getFilterPatterns().remove(cbFilter.getEditor().getText());
-        }
-        settingsService.saveSettings();
-        refreshCBFilters();
-    }
-
-    @FXML
-    private void handleLanguageCodeCheckBoxAction(ActionEvent event) {
-        settingsService.setLanguageCode(cbLanguageCode.getValue());
-    }
-
-    @FXML
-    private void handleGenderCodeCheckBoxAction(ActionEvent event) {
-        settingsService.setGender(cbGender.getValue());
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -224,6 +143,106 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         });
     }
 
+    @FXML
+    private void handleGenerateButtonAction(ActionEvent event) {
+        event.consume();
+
+        String group = tfGroup.getText();
+        String phrase = tfPhrase.getText();
+        String languageCode = cbLanguageCode.getValue();
+        SsmlVoiceGender gender = cbGender.getValue();
+
+        loggerService.logGenerationStarted();
+        loggerService.logGenerationPhrase(
+                phrase,
+                ttsFileGeneratorService.formatGroupName(group),
+                languageCode,
+                gender.toString());
+
+        tfPhrase.clear();
+
+        asyncService.startAsyncProcess(() -> {
+            onGeneratePhraseStarted();
+            ttsFileGeneratorService.generate(
+                    group,
+                    phrase,
+                    languageCode,
+                    gender,
+                    Configurations.SPEAKING_RATE);
+        }, () -> {
+            onGeneratePhraseFinished(ttsFileGeneratorService.toFinalFileName(group, phrase));
+        });
+    }
+
+    @FXML
+    private void handleGeneratedPhrasesListKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+            event.consume();
+            String fileName = lvGeneratedPhrases.getSelectionModel().getSelectedItem().toString();
+            onPhraseListCellPlay(fileName);
+        }
+    }
+
+    @FXML
+    private void handleAddDeleteFilterButtonAction(ActionEvent event) {
+        event.consume();
+
+        if (btnAddDeleteFilter.getText().equals(Configurations.TXT_BUTTON_ADD)) {
+            settingsService.getFilterPatterns().add(cbFilter.getEditor().getText());
+        } else {
+            settingsService.getFilterPatterns().remove(cbFilter.getEditor().getText());
+        }
+        settingsService.saveSettings();
+        refreshCBFilters();
+    }
+
+    @FXML
+    private void handleLanguageCodeCheckBoxAction(ActionEvent event) {
+        settingsService.setLanguageCode(cbLanguageCode.getValue());
+    }
+
+    @FXML
+    private void handleGenderCodeCheckBoxAction(ActionEvent event) {
+        settingsService.setGender(cbGender.getValue());
+    }
+
+    private int generatedPhrasesInProgressCount = 0;
+
+    private void onGeneratePhraseStarted() {
+        hbInProgress.setVisible(true);
+        lvGeneratedPhrases.setDisable(true);
+        generatedPhrasesInProgressCount++;
+    }
+
+    private void onGeneratePhraseFinished(String fileName) {
+        generatedPhrasesInProgressCount--;
+        if (generatedPhrasesInProgressCount == 0) {
+            hbInProgress.setVisible(false);
+            lvGeneratedPhrases.setDisable(false);
+        }
+
+        loggerService.logGenerationFinished();
+        tempFolderService.untrack(fileName);
+        refreshGeneratedPhrasesList();
+        lvGeneratedPhrases.getSelectionModel().select(fileName);
+    }
+
+    @Override
+    public void onPhraseListCellDelete(String id) {
+        lvGeneratedPhrases.requestFocus();
+        mediaPlayerService.stop();
+        tempFolderService.remove(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
+
+        refreshGeneratedPhrasesList();
+    }
+
+    @Override
+    public void onPhraseListCellPlay(String id) {
+        loggerService.logPlying(id);
+        String filePath = tempFolderService.add(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
+        mediaPlayerService.play(filePath);
+    }
+
     private void onFilterChanged() {
         settingsService.setFilter(cbFilter.getEditor().getText());
         updateAddDeleteFilterButtonState();
@@ -274,21 +293,5 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         } catch (PatternSyntaxException ex) {
             return false;
         }
-    }
-
-    @Override
-    public void onPhraseListCellDelete(String id) {
-        lvGeneratedPhrases.requestFocus();
-        mediaPlayerService.stop();
-        tempFolderService.remove(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
-
-        refreshGeneratedPhrasesList();
-    }
-
-    @Override
-    public void onPhraseListCellPlay(String id) {
-        loggerService.logPlying(id);
-        String filePath = tempFolderService.add(Configurations.PATH_GENERATED_PHRASES_FOLDER, id);
-        mediaPlayerService.play(filePath);
     }
 }
