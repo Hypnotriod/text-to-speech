@@ -4,11 +4,16 @@ import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Languages;
 import java.util.ArrayList;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class Settings {
 
     public ArrayList<String> filterPatterns = new ArrayList<>();

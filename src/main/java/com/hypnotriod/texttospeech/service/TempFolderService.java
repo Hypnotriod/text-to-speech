@@ -2,15 +2,23 @@ package com.hypnotriod.texttospeech.service;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
 import java.util.HashSet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TempFolderService {
 
-    private final FilesManagementService filesManagementService = new FilesManagementService();
-    private final HashSet<String> alreadyCopiedFilesToTempFolder = new HashSet<>();
+    @Autowired
+    private FilesManagementService filesManagementService;
+
+    private HashSet<String> alreadyCopiedFilesToTempFolder = new HashSet<>();
 
     public String add(String folder, String fileName) {
         if (!alreadyCopiedFilesToTempFolder.contains(fileName)) {
@@ -23,7 +31,7 @@ public class TempFolderService {
         alreadyCopiedFilesToTempFolder.remove(fileName);
         filesManagementService.removeFile(folder + fileName);
     }
-    
+
     public void untrack(String fileName) {
         alreadyCopiedFilesToTempFolder.remove(fileName);
     }

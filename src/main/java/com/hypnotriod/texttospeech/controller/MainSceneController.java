@@ -4,7 +4,6 @@ import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
 import com.hypnotriod.texttospeech.service.TTSFileGeneratorService;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.constants.Languages;
-import com.hypnotriod.texttospeech.constants.Services;
 import com.hypnotriod.texttospeech.service.AsyncService;
 import com.hypnotriod.texttospeech.service.FilesManagementService;
 import com.hypnotriod.texttospeech.service.LoggerService;
@@ -13,6 +12,7 @@ import com.hypnotriod.texttospeech.service.SettingsService;
 import com.hypnotriod.texttospeech.service.TempFolderService;
 import com.hypnotriod.texttospeech.component.PhraseListCell;
 import com.hypnotriod.texttospeech.component.PhraseListCellHandler;
+import com.hypnotriod.texttospeech.constants.Resources;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -33,21 +33,18 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@FxmlView(Resources.PATH_MAIN_SCENE)
 public class MainSceneController implements Initializable, PhraseListCellHandler {
-
-    private final AsyncService asyncService = Services.ASYNC_SERVICE;
-    private final FilesManagementService filesManagementService = Services.FILES_MANAGEMENT_SERVICE;
-    private final TTSFileGeneratorService ttsFileGeneratorService = Services.TTS_FILE_GENERATOR_SERVICE;
-    private final MediaPlayerService mediaPlayerService = Services.MEDIA_PLAYER_SERVICE;
-    private final TempFolderService tempFolderService = Services.TEMP_FOLDER_SERVICE;
-    private final LoggerService loggerService = Services.LOGGER_SERVICE;
-    private final SettingsService settingsService = Services.SETTINGS_SERVICE;
 
     @FXML
     private Button btnGenerate;
@@ -75,6 +72,27 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
     @FXML
     private HBox hbInProgress;
+
+    @Autowired
+    private AsyncService asyncService;
+
+    @Autowired
+    private SettingsService settingsService;
+
+    @Autowired
+    private FilesManagementService filesManagementService;
+
+    @Autowired
+    private TTSFileGeneratorService ttsFileGeneratorService;
+
+    @Autowired
+    private MediaPlayerService mediaPlayerService;
+
+    @Autowired
+    private TempFolderService tempFolderService;
+
+    @Autowired
+    private LoggerService loggerService;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

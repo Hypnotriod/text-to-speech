@@ -1,6 +1,6 @@
 package com.hypnotriod.texttospeech.component;
 
-import com.hypnotriod.texttospeech.Main;
+import com.hypnotriod.texttospeech.TextToSpeechApplication;
 import com.hypnotriod.texttospeech.constants.Resources;
 import com.hypnotriod.texttospeech.controller.PhraseListCellController;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class PhraseListCell extends ListCell<String> {
         if (key != null && empty == false && content == null) {
             try {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(Main.class.getResource(Resources.PATH_PHRASE_LIST_CELL));
+                loader.setLocation(TextToSpeechApplication.class.getResource(Resources.PATH_PHRASE_LIST_CELL));
                 content = loader.load();
                 content.getStylesheets().add(Resources.PATH_MAIN_SCENE_STLE);
                 cellController = loader.getController();

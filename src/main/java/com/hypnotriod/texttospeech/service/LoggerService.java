@@ -1,9 +1,15 @@
 package com.hypnotriod.texttospeech.service;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class LoggerService {
 
     public void logGenerationStarted() {

@@ -4,22 +4,36 @@ import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.hypnotriod.texttospeech.constants.Configurations;
-import com.hypnotriod.texttospeech.constants.Services;
 import com.hypnotriod.texttospeech.entity.Settings;
 import java.util.ArrayList;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SettingsService {
 
-    private final FilesManagementService filesManagementService = Services.FILES_MANAGEMENT_SERVICE;
-    private final LoggerService loggerService = Services.LOGGER_SERVICE;
-    private final Gson gson = new Gson();
-    private Settings settings = new Settings();
+    @Autowired
+    private FilesManagementService filesManagementService;
 
-    public SettingsService() {
+    @Autowired
+    private LoggerService loggerService;
+
+    @Autowired
+    private Settings settings;
+
+    @Autowired
+    private Gson gson;
+
+    @PostConstruct
+    public void init() {
         String settingsJSON = filesManagementService.readFileToString(Configurations.PATH_SETTINGS);
         if (settingsJSON != null) {
             try {
@@ -70,7 +84,7 @@ public class SettingsService {
     public void setGender(SsmlVoiceGender value) {
         settings.gender = value;
     }
-    
+
     public String getGroup() {
         return settings.group;
     }
@@ -78,7 +92,7 @@ public class SettingsService {
     public void setGroup(String value) {
         settings.group = value;
     }
-    
+
     public String getFilter() {
         return settings.filter;
     }
