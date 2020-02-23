@@ -36,6 +36,9 @@ import javafx.util.Callback;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,6 +47,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @FxmlView(Resources.PATH_MAIN_SCENE)
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MainSceneController implements Initializable, PhraseListCellHandler {
 
     @FXML
@@ -94,6 +98,9 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     @Autowired
     private LoggerService loggerService;
 
+    @Autowired
+    private ConfigurableApplicationContext applicationContext;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setDisable(true);
@@ -110,13 +117,9 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     }
 
     private void initializePhrasesListView() {
-        PhraseListCellHandler handler = this;
-        lvGeneratedPhrases.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-            @Override
-            public ListCell<String> call(ListView<String> param) {
-                return new PhraseListCell(handler);
-            }
-        });
+        Callback<ListView<String>, ListCell<String>> cellFactory = (ListView<String> param)
+                -> applicationContext.getBean(PhraseListCell.class);
+        lvGeneratedPhrases.setCellFactory(cellFactory);
     }
 
     private void initializeComboboxes() {
@@ -128,22 +131,6 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
 
         cbFilter.getEditor().setText(settingsService.getFilter());
         refreshCBFilters();
-    }
-
-    private void refreshCBFilters() {
-        String filter = cbFilter.getEditor().getText();
-        cbFilter.getItems().clear();
-        cbFilter.getItems().addAll(settingsService.getFilterPatterns());
-        int filterIndex = cbFilter.getItems().indexOf(filter);
-        cbFilter.getSelectionModel().select(filterIndex);
-        updateAddDeleteFilterButtonState();
-    }
-
-    private void onTextChanged() {
-        settingsService.setGroup(tfGroup.getText());
-        String inputText = ttsFileGeneratorService.toAllowedFileName(tfPhrase.getText());
-        String groupName = ttsFileGeneratorService.toAllowedFileName(tfGroup.getText());
-        btnGenerate.setDisable(inputText.length() == 0 || groupName.length() == 0);
     }
 
     private void initializeListeners() {
@@ -223,27 +210,6 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         settingsService.setGender(cbGender.getValue());
     }
 
-    private int generatedPhrasesInProgressCount = 0;
-
-    private void onGeneratePhraseStarted() {
-        hbInProgress.setVisible(true);
-        lvGeneratedPhrases.setDisable(true);
-        generatedPhrasesInProgressCount++;
-    }
-
-    private void onGeneratePhraseFinished(String fileName) {
-        generatedPhrasesInProgressCount--;
-        if (generatedPhrasesInProgressCount == 0) {
-            hbInProgress.setVisible(false);
-            lvGeneratedPhrases.setDisable(false);
-        }
-
-        loggerService.logGenerationFinished();
-        tempFolderService.untrack(fileName);
-        refreshGeneratedPhrasesList();
-        lvGeneratedPhrases.getSelectionModel().select(fileName);
-    }
-
     @Override
     public void onPhraseListCellDelete(String id) {
         lvGeneratedPhrases.requestFocus();
@@ -260,10 +226,40 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
         mediaPlayerService.play(filePath);
     }
 
+    private void onGeneratePhraseStarted() {
+        hbInProgress.setVisible(true);
+        lvGeneratedPhrases.setDisable(true);
+    }
+
+    private void onGeneratePhraseFinished(String fileName) {
+        hbInProgress.setVisible(false);
+        lvGeneratedPhrases.setDisable(false);
+        loggerService.logGenerationFinished();
+        tempFolderService.untrack(fileName);
+        refreshGeneratedPhrasesList();
+        lvGeneratedPhrases.getSelectionModel().select(fileName);
+    }
+
+    private void onTextChanged() {
+        settingsService.setGroup(tfGroup.getText());
+        String inputText = ttsFileGeneratorService.toAllowedFileName(tfPhrase.getText());
+        String groupName = ttsFileGeneratorService.toAllowedFileName(tfGroup.getText());
+        btnGenerate.setDisable(inputText.length() == 0 || groupName.length() == 0);
+    }
+
     private void onFilterChanged() {
         settingsService.setFilter(cbFilter.getEditor().getText());
         updateAddDeleteFilterButtonState();
         refreshGeneratedPhrasesList();
+    }
+
+    private void refreshCBFilters() {
+        String filter = cbFilter.getEditor().getText();
+        cbFilter.getItems().clear();
+        cbFilter.getItems().addAll(settingsService.getFilterPatterns());
+        int filterIndex = cbFilter.getItems().indexOf(filter);
+        cbFilter.getSelectionModel().select(filterIndex);
+        updateAddDeleteFilterButtonState();
     }
 
     private void updateAddDeleteFilterButtonState() {

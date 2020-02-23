@@ -18,7 +18,7 @@ public class TempFolderService {
     @Autowired
     private FilesManagementService filesManagementService;
 
-    private HashSet<String> alreadyCopiedFilesToTempFolder = new HashSet<>();
+    private final HashSet<String> alreadyCopiedFilesToTempFolder = new HashSet<>();
 
     public String add(String folder, String fileName) {
         if (!alreadyCopiedFilesToTempFolder.contains(fileName)) {

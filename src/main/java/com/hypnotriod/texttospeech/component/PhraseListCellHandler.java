@@ -7,6 +7,6 @@ package com.hypnotriod.texttospeech.component;
 public interface PhraseListCellHandler {
 
     public void onPhraseListCellDelete(String id);
+
     public void onPhraseListCellPlay(String id);
-    
 }

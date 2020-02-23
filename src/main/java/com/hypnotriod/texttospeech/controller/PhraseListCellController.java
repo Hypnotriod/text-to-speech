@@ -2,6 +2,7 @@ package com.hypnotriod.texttospeech.controller;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.component.PhraseListCellHandler;
+import com.hypnotriod.texttospeech.constants.Resources;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -9,11 +10,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@FxmlView(Resources.PATH_PHRASE_LIST_CELL)
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PhraseListCellController implements Initializable {
 
     @FXML
@@ -22,8 +31,10 @@ public class PhraseListCellController implements Initializable {
     @FXML
     private Label tfGroup;
 
-    private String key;
+    @Autowired
     private PhraseListCellHandler handler;
+
+    private String key;
 
     @FXML
     private void handleComponentClickAction(MouseEvent event) {
@@ -54,13 +65,5 @@ public class PhraseListCellController implements Initializable {
 
         tfGroup.setText(group);
         tfPhrase.setText(phrase);
-    }
-
-    public PhraseListCellHandler getHandler() {
-        return handler;
-    }
-
-    public void setHandler(PhraseListCellHandler handler) {
-        this.handler = handler;
     }
 }

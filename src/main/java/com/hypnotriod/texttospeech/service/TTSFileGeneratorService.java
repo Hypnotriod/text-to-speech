@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,10 +29,11 @@ import org.springframework.stereotype.Component;
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TTSFileGeneratorService {
 
-    private final FilesManagementService filesManagementService = new FilesManagementService();
+    @Autowired
+    private FilesManagementService filesManagementService;
 
     public void generate(String group, String phrase, String language, SsmlVoiceGender gender, float speakingRate) {
-        try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+        try ( TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
             SynthesisInput input = SynthesisInput.newBuilder()
                     .setText(phrase)
                     .build();
@@ -53,7 +55,7 @@ public class TTSFileGeneratorService {
 
             filesManagementService.createFolderIfNotExist(Configurations.PATH_GENERATED_PHRASES_FOLDER);
 
-            try (OutputStream out = new FileOutputStream(
+            try ( OutputStream out = new FileOutputStream(
                     Configurations.PATH_GENERATED_PHRASES_FOLDER
                     + toFinalFileName(group, phrase))) {
                 out.write(audioContents.toByteArray());

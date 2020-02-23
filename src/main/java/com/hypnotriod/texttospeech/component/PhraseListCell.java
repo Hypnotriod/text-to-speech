@@ -1,40 +1,45 @@
 package com.hypnotriod.texttospeech.component;
 
-import com.hypnotriod.texttospeech.TextToSpeechApplication;
 import com.hypnotriod.texttospeech.constants.Resources;
 import com.hypnotriod.texttospeech.controller.PhraseListCellController;
-import java.io.IOException;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.AnchorPane;
+import net.rgielen.fxweaver.core.FxControllerAndView;
+import net.rgielen.fxweaver.core.FxWeaver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PhraseListCell extends ListCell<String> {
+
+    @Autowired
+    private FxWeaver fxWeaver;
+
+    @Autowired
+    private PhraseListCellHandler handler;
 
     private AnchorPane content = null;
     private PhraseListCellController cellController = null;
-    private PhraseListCellHandler handler = null;
-
-    public PhraseListCell(PhraseListCellHandler handler) {
-        this.handler = handler;
-    }
 
     @Override
     public void updateItem(String key, boolean empty) {
         super.updateItem(key, empty);
+
         if (key != null && empty == false && content == null) {
-            try {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(TextToSpeechApplication.class.getResource(Resources.PATH_PHRASE_LIST_CELL));
-                content = loader.load();
+            FxControllerAndView<PhraseListCellController, AnchorPane> phraseListCell
+                    = fxWeaver.load(PhraseListCellController.class);
+            phraseListCell.getView().ifPresent(view -> {
+                content = view;
+                cellController = phraseListCell.getController();
                 content.getStylesheets().add(Resources.PATH_MAIN_SCENE_STLE);
-                cellController = loader.getController();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            });
         }
 
         if (content != null) {
@@ -44,7 +49,6 @@ public class PhraseListCell extends ListCell<String> {
 
         if (cellController != null && key != null && !empty) {
             cellController.setKey(key);
-            cellController.setHandler(handler);
         }
     }
 }
