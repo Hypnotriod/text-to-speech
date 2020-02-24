@@ -38,6 +38,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,7 @@ import org.springframework.stereotype.Component;
 @Component
 @FxmlView(Resources.PATH_MAIN_SCENE)
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Lazy
 public class MainSceneController implements Initializable, PhraseListCellHandler {
 
     @FXML

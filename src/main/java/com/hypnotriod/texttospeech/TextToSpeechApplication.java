@@ -12,16 +12,14 @@ import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
-@Component
 public class TextToSpeechApplication extends Application {
 
-    public ConfigurableApplicationContext applicationContext;
+    private ConfigurableApplicationContext applicationContext;
     private SettingsService settingsService;
     private FilesManagementService filesManagementService;
     private Stage stage;
