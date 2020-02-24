@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="-1.0" minWidth="-1.0" prefHeight="350.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.hypnotriod.texttospeech.controller.MainSceneController">
+<AnchorPane id="AnchorPane" minHeight="-1.0" minWidth="-1.0" prefHeight="350.0" prefWidth="600.0" stylesheets="@../styles/main_scene_style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hypnotriod.texttospeech.controller.MainSceneController">
   <children>
     <TextField id="text" fx:id="tfPhrase" prefHeight="25.0" prefWidth="292.0" promptText="Type phrase here" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
     <ComboBox fx:id="cbLanguageCode" onAction="#handleLanguageCodeCheckBoxAction" prefHeight="21.0" prefWidth="130.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="47.0">

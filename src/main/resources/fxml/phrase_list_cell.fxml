@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-1.0" onMouseClicked="#handleComponentClickAction" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.hypnotriod.texttospeech.controller.PhraseListCellController">
+<AnchorPane id="AnchorPane" maxHeight="-1.0" onMouseClicked="#handleComponentClickAction" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@../styles/phrase_list_cell_style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hypnotriod.texttospeech.controller.PhraseListCellController">
   <children>
     <Label id="txtGroup" fx:id="tfGroup" layoutY="5.0" prefWidth="130.0" text="GROUP" underline="false" AnchorPane.leftAnchor="10.0">
       <font>

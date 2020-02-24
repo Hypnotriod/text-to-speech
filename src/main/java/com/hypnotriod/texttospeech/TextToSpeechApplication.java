@@ -1,8 +1,8 @@
 package com.hypnotriod.texttospeech;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
-import com.hypnotriod.texttospeech.constants.Resources;
 import com.hypnotriod.texttospeech.controller.MainSceneController;
+import com.hypnotriod.texttospeech.service.FilesManagementService;
 import com.hypnotriod.texttospeech.service.SettingsService;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -23,6 +23,7 @@ public class TextToSpeechApplication extends Application {
 
     public ConfigurableApplicationContext applicationContext;
     private SettingsService settingsService;
+    private FilesManagementService filesManagementService;
     private Stage stage;
 
     @Override
@@ -31,15 +32,17 @@ public class TextToSpeechApplication extends Application {
 
         this.applicationContext = new SpringApplicationBuilder().sources(Launcher.class).run(args);
         this.settingsService = this.applicationContext.getBean(SettingsService.class);
+        this.filesManagementService = this.applicationContext.getBean(FilesManagementService.class);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        filesManagementService.removeFolderIfExist(Configurations.PATH_TEMP_FOLDER);
+
         FxWeaver fxWeaver = applicationContext.getBean(FxWeaver.class);
         Parent root = fxWeaver.loadView(MainSceneController.class);
 
         Scene mainScene = new Scene(root);
-        mainScene.getStylesheets().add(Resources.PATH_MAIN_SCENE_STLE);
 
         this.stage = stage;
         this.stage.setTitle(Configurations.APP_NAME);
