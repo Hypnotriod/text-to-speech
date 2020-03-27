@@ -14,11 +14,13 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.conscrypt.Conscrypt;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Ilya Pikin
  */
+@Component
 public class SSLService {
 
     public void disableSslVerification() {

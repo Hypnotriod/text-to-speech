@@ -8,8 +8,6 @@ import com.hypnotriod.texttospeech.entity.Settings;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Component;
  * @author Ilya Pikin
  */
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SettingsService {
 
     @Autowired

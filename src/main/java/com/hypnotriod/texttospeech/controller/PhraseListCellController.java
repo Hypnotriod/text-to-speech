@@ -3,6 +3,7 @@ package com.hypnotriod.texttospeech.controller;
 import com.hypnotriod.texttospeech.constants.Configurations;
 import com.hypnotriod.texttospeech.component.PhraseListCellHandler;
 import com.hypnotriod.texttospeech.constants.Resources;
+import com.hypnotriod.texttospeech.service.ClipboardService;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -34,6 +35,9 @@ public class PhraseListCellController implements Initializable {
     @Autowired
     private PhraseListCellHandler handler;
 
+    @Autowired
+    private ClipboardService clipboardService;
+
     private String key;
 
     @FXML
@@ -46,6 +50,12 @@ public class PhraseListCellController implements Initializable {
     private void handleDeleteButtonAction(ActionEvent event) {
         event.consume();
         handler.onPhraseListCellDelete(key);
+    }
+
+    @FXML
+    private void handleCopyButtonAction(ActionEvent event) {
+        event.consume();
+        clipboardService.copyToClipboard(tfPhrase.getText());
     }
 
     @Override

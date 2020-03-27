@@ -3,8 +3,6 @@ package com.hypnotriod.texttospeech.service;
 import java.io.File;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Component;
  * @author Ilya Pikin
  */
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MediaPlayerService {
 
     private MediaPlayer mediaPlayer;

@@ -22,6 +22,7 @@ public class Configurations {
     public static final String TXT_BUTTON_ADD = "+";
 
     public static final Pattern FILE_NAME_REGEXP_PATTERN = Pattern.compile("[\\p{L}\\p{N}' _]");
+    public static final Pattern GROUP_NAME_REGEXP_PATTERN = Pattern.compile("[\\p{L}\\p{N}' \\#\\$\\@\\%-_]");
 
     public static final float SPEAKING_RATE = 1f;
 

@@ -16,9 +16,8 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Component;
  * @author Ilya Pikin
  */
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class TTSFileGeneratorService {
 
     @Autowired
@@ -72,12 +70,20 @@ public class TTSFileGeneratorService {
     }
 
     public String formatGroupName(String group) {
-        return toAllowedFileName(group).toUpperCase().replace(' ', '_');
+        return toAllowedGroupName(group).toUpperCase().replace(' ', '_');
+    }
+
+    public String toAllowedGroupName(String input) {
+        return toAllowedName(input, Configurations.GROUP_NAME_REGEXP_PATTERN);
     }
 
     public String toAllowedFileName(String input) {
+        return toAllowedName(input, Configurations.FILE_NAME_REGEXP_PATTERN);
+    }
+
+    public String toAllowedName(String input, Pattern pattern) {
         StringBuilder result = new StringBuilder();
-        Matcher matcher = Configurations.FILE_NAME_REGEXP_PATTERN.matcher(input);
+        Matcher matcher = pattern.matcher(input);
 
         while (matcher.find()) {
             result.append(matcher.group());

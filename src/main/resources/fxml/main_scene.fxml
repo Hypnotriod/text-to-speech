@@ -32,7 +32,7 @@
         </FXCollections>
       </items>
     </ComboBox>
-    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="221.0" prefWidth="472.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="115.0" />
+    <ListView id="lvGeneratedFrases" fx:id="lvGeneratedPhrases" onKeyPressed="#handleGeneratedPhrasesListKeyPressed" prefHeight="221.0" prefWidth="472.0" stylesheets="@../styles/phrase_list_cell_style.css" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="115.0" />
     <HBox fx:id="hbInProgress" alignment="TOP_CENTER" prefHeight="-1.0" prefWidth="-1.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="101.0">
       <children>
         <ProgressIndicator prefHeight="99.0" prefWidth="111.0" progress="-1.0" />

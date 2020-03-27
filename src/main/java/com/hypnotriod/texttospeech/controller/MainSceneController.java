@@ -36,10 +36,8 @@ import javafx.util.Callback;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -48,7 +46,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @FxmlView(Resources.PATH_MAIN_SCENE)
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 @Lazy
 public class MainSceneController implements Initializable, PhraseListCellHandler {
 
@@ -245,8 +242,8 @@ public class MainSceneController implements Initializable, PhraseListCellHandler
     private void onTextChanged() {
         settingsService.setGroup(tfGroup.getText());
         String inputText = ttsFileGeneratorService.toAllowedFileName(tfPhrase.getText());
-        String groupName = ttsFileGeneratorService.toAllowedFileName(tfGroup.getText());
-        btnGenerate.setDisable(inputText.length() == 0 || groupName.length() == 0);
+        String groupName = ttsFileGeneratorService.toAllowedGroupName(tfGroup.getText());
+        btnGenerate.setDisable(inputText.isEmpty() || groupName.isEmpty());
     }
 
     private void onFilterChanged() {

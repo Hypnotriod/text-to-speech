@@ -1,12 +1,14 @@
 package com.hypnotriod.texttospeech;
 
 import com.hypnotriod.texttospeech.constants.Configurations;
+import com.hypnotriod.texttospeech.constants.Resources;
 import com.hypnotriod.texttospeech.controller.MainSceneController;
 import com.hypnotriod.texttospeech.service.FilesManagementService;
 import com.hypnotriod.texttospeech.service.SettingsService;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -52,6 +54,7 @@ public class TextToSpeechApplication extends Application {
         this.stage.setHeight(Math.min(
                 Screen.getPrimary().getBounds().getHeight(),
                 settingsService.getAppHeight()));
+        this.stage.getIcons().add(new Image(TextToSpeechApplication.class.getResourceAsStream(Resources.PATH_ICON)));
         this.stage.setScene(mainScene);
         this.stage.show();
     }
