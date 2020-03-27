@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -66,7 +67,7 @@ public class TTSFileGeneratorService {
     }
 
     public String formatText(String text) {
-        return fromUpperCase(toAllowedFileName(text));
+        return capitalize(toAllowedFileName(text));
     }
 
     public String formatGroupName(String group) {
@@ -89,11 +90,11 @@ public class TTSFileGeneratorService {
             result.append(matcher.group());
         }
 
-        return result.toString();
+        return StringUtils.trimTrailingWhitespace(result.toString());
     }
 
-    public String fromUpperCase(String input) {
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    public String capitalize(String input) {
+        return StringUtils.capitalize(input);
     }
 
     public String toFinalFileName(String group, String phrase) {
