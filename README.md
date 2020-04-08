@@ -1,6 +1,6 @@
 # Text To Speech  
 
-Utility project, based on `Google Text-To-Speech API` and `JavaFX` GUI framework
+Utility project, to generate and play phrases, based on `Google Text-To-Speech API` and `JavaFX` GUI framework
 
 ## GOOGLE_APPLICATION_CREDENTIALS
 
